@@ -6,15 +6,43 @@ matrix_t::matrix_t() : elements_{ nullptr }, rows_{ 0 }, collumns_{ 0 }
 
 matrix_t::matrix_t( matrix_t const & other )
 {
+	rows_ = other.rows();
+	collumns_=other.collumns();
+	elements_= new float *[other.rows()];
+	for (std::size_t i = 0; i < other.rows(); ++i) {
+		elements_[i] = new float[other.collumns()];
+		for (std::size_t j = 0; j < other.collumns(); ++j) {
+			elements_[i][j] = other.elements_[i][j];
+		}
+	}
 }
 
 matrix_t & matrix_t::operator =( matrix_t const & other )
 {
+	if (this != &other) {
+	    for (std::size_t i = 0; i < rows_; ++i) {
+		    delete[] elements_[i];
+	    }
+            delete[] elements_;
+
+            elements_ = new float *[other.rows()];
+	    for (std::size_t i = 0; i < other.rows(); ++i) {
+			elements_[i] = new float[other.collumns()];
+			for (std::size_t j = 0; j < other.collumns(); ++j) {
+				elements_[i][j] = other.elements_[i][j];
+			}
+	    }
+	    rows_ = other.rows();
+            collumns_ = other.collumns();
+	}
 	return *this;
 }
 
 matrix_t::~matrix_t()
 {
+		for (std::size_t i = 0; i < rows_; ++i) {
+		    delete[] elements_[i];}
+	delete[] elements_;
 }
 
 std::size_t matrix_t::rows() const
@@ -29,37 +57,100 @@ std::size_t matrix_t::collumns() const
 
 matrix_t matrix_t::operator +( matrix_t const & other ) const
 {
+	assert(rows_ == other.rows_ && collumns_ == other.collumns_);	
 	matrix_t result;
-
+	result.rows_=rows_;
+	result.collumns_=collumns_;
+	result.elements_= new float *[rows_];
+		for (std::size_t i = 0; i < rows_; ++i) {
+			result.elements_[i] = new float[collumns_];
+			for (std::size_t j = 0; j < collumns_; ++j) {
+			result.elements_[i][j] = elements_[i][j]+other.elements_[i][j];
+			}
+		}
 	return result;
 }
 
 matrix_t matrix_t::operator -( matrix_t const & other ) const
 {
+	assert(rows_ == other.rows_ && collumns_ == other.collumns_);
 	matrix_t result;
-
+	result.rows_=rows_;
+	result.collumns_=collumns_;	
+	result.elements_= new float *[rows_];
+		for (std::size_t i = 0; i < rows_; ++i) {
+			result.elements_[i] = new float[collumns_];
+		   	for (std::size_t j = 0; j < collumns_; ++j) {
+			result.elements_[i][j] = elements_[i][j]-other.elements_[i][j];
+			}
+		}
 	return result;
 }
 
 matrix_t matrix_t::operator *( matrix_t const & other ) const
 {
+	assert(collumns_ == other.rows_);
 	matrix_t result;
-
+	result.rows_=rows_;
+	result.collumns_=other.collumns_;
+	result.elements_=new float *[rows_];
+        for (std::size_t i = 0; i < rows_; i++) {
+             	result.elements_[i]=new float[other.collumns()];
+		for (std::size_t j = 0; j < other.collumns(); j++) {
+			float temp = 0;
+			for (std::size_t k = 0; k < collumns_; k++) {
+			temp += elements_[i][k] * other.elements_[k][j];
+			}
+			result.elements_[i][j] = temp;
+		}
+	} 
 	return result;
 }
 
 matrix_t & matrix_t::operator -=( matrix_t const & other )
 {
+	assert(rows_ == other.rows_ && collumns_ == other.collumns_);
+	for (std::size_t i = 0; i < rows_; ++i) {
+		for (std::size_t j = 0; j < collumns_; ++j) {
+		elements_[i][j] = elements_[i][j]-other.elements_[i][j];
+		}
+	}
 	return *this;
 }
 
 matrix_t & matrix_t::operator +=( matrix_t const & other )
 {
+	assert(rows_ == other.rows_ && collumns_ == other.collumns_);
+	for (std::size_t i = 0; i < rows_; ++i) {
+		for (std::size_t j = 0; j < collumns_; ++j) {
+			elements_[i][j] = elements_[i][j]+other.elements_[i][j];
+		}
+	}
 	return *this;
 }
 
 matrix_t & matrix_t::operator *=( matrix_t const & other )
 {
+	assert(collumns_ == other.rows_);
+	matrix_t result;
+	result.rows_=rows_;
+	result.collumns_=other.collumns_;
+	result.elements_=new float *[rows_];
+        for (std::size_t i = 0; i < rows_; i++) {
+             	result.elements_[i]=new float[other.collumns()];
+		for (std::size_t j = 0; j < other.collumns(); j++) {
+			float temp = 0;
+			for (std::size_t k = 0; k < collumns_; k++) {
+			temp += elements_[i][k] * other.elements_[k][j];
+			}
+			result.elements_[i][j] = temp;
+		}
+	} 
+	for (std::size_t i = 0; i < rows_; i++) {
+		for (std::size_t j = 0; j < other.collumns(); j++){
+			elements_[i][j]=result.elements_[i][j];
+		}
+	}
 	return *this;
 }
 
