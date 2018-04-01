@@ -235,3 +235,19 @@ template <typename T> istream & matrix_t<T>::read(istream & stream)
 	}
 	return stream;
 }
+
+template <typename T> ostream & matrix_t<T>::write(ostream & stream) const
+{
+	stream << rows_ << ", " << collumns_;
+	for (size_t i = 0; i < rows_; ++i) {
+		stream << '\n';
+		for (size_t j = 0; j < collumns_; ++j) {
+			stream << elements_[i][j];
+			if (j != rows_ - 1) {
+				stream << ' ';
+			}
+		}
+	}
+
+	return stream;
+}
