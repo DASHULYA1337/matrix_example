@@ -25,8 +25,8 @@ public:
 	matrix_t & operator +=(matrix_t const & other);
 	matrix_t & operator *=(matrix_t const & other);
 
-	istream & read(std::istream & stream);
-	ostream & write(std::ostream  & stream) const;
+	istream & read(istream & stream);
+	ostream & write(ostream  & stream) const;
 };
 template <typename T> matrix_t<T>::matrix_t() : elements_{ nullptr }, rows_{ 0 }, collumns_{ 0 }
 {
