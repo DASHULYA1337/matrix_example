@@ -254,6 +254,5 @@ template <typename T> ostream & matrix_t<T>::write(ostream & stream) const
 			}
 		}
 	}
-
 	return stream;
 }
