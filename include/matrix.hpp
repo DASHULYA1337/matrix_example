@@ -195,12 +195,11 @@ template <typename T> matrix_t<T> & matrix_t<T>::operator *=(matrix_t const & ot
 	return *this;
 }
 
-template <typename T> istream & matrix_t<T>::read(std::istream & stream)
+template <typename T> istream & matrix_t<T>::read(istream & stream)
 {
 	size_t rows;
 	size_t collumns;
 	char symbol;
-
 	bool success = true;
 	if (stream >> rows && stream >> symbol && symbol == ',' && stream >> collumns) {
 		T ** elements = new T *[rows];
@@ -232,27 +231,7 @@ template <typename T> istream & matrix_t<T>::read(std::istream & stream)
 		}
 	}
 	else {
-		success = false;
-	}
-
-	if (!success) {
-		stream.setstate(ios_base::failbit);
-	}
-
-	return stream;
-}
-
-template <typename T> ostream & matrix_t<T>::write(ostream & stream) const
-{
-	stream << rows_ << ", " << collumns_;
-	for (size_t i = 0; i < rows_; ++i) {
-		stream << '\n';
-		for (size_t j = 0; j < collumns_; ++j) {
-			stream << elements_[i][j];
-			if (j != rows_ - 1) {
-				stream << ' ';
-			}
-		}
+		throw exception("Error: incorrect matrix");
 	}
 	return stream;
 }
